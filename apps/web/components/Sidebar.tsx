@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { fetchSystemConfig, updateSystemConfig, fetchAvailableModels, triggerIngestion } from '../lib/api';
-import { SystemConfig, ModelListResponse } from '../lib/types';
+import { fetchSystemConfig, updateSystemConfig, fetchAvailableModels, triggerIngestion } from '@/lib/api';
+import { SystemConfig, ModelListResponse } from '@/lib/types';
 
 export default function Sidebar() {
   const [config, setConfig] = useState<SystemConfig | null>(null);
@@ -66,20 +66,24 @@ export default function Sidebar() {
   };
 
   if (loading || !config || !models) {
-    return <div style={{ padding: '10px', borderRight: '1px solid #ccc' }}>Loading configuration...</div>;
+    return (
+      <div style={{ width: '280px', padding: '15px', borderRight: '1px solid #ccc', backgroundColor: '#f9f9f9', color: '#111827' }}>
+        Loading configuration...
+      </div>
+    );
   }
 
   const currentEmbedOptions = config.provider === 'ollama' ? models.ollama.embedders : models.local.embedders;
   const currentLLMOptions = config.provider === 'ollama' ? models.ollama.generators : models.local.generators;
 
   return (
-    <div style={{ width: '280px', padding: '15px', borderRight: '1px solid #ccc' }}>
-      <h3>System Configuration</h3>
+    <div style={{ width: '280px', padding: '15px', borderRight: '1px solid #ccc', backgroundColor: '#f9f9f9', color: '#111827', height: '100vh', boxSizing: 'border-box' }}>
+      <h3 style={{ marginBottom: '15px' }}>System Configuration</h3>
 
       {/* Provider Selection */}
       <div style={{ marginBottom: '15px' }}>
         <label><b>Provider:</b></label><br />
-        <label>
+        <label style={{ marginRight: '10px' }}>
           <input
             type="radio"
             name="provider"
@@ -89,7 +93,6 @@ export default function Sidebar() {
           />
           Ollama
         </label>
-        {' '}
         <label>
           <input
             type="radio"
@@ -108,7 +111,7 @@ export default function Sidebar() {
         <select
           value={config.selected_embed_model}
           onChange={(e) => handleModelChange('selected_embed_model', e.target.value)}
-          style={{ width: '100%', marginTop: '5px' }}
+          style={{ width: '100%', marginTop: '5px', padding: '5px', backgroundColor: '#ffffff', color: '#111827', border: '1px solid #ccc' }}
         >
           {currentEmbedOptions.map((m) => (
             <option key={m} value={m}>{m}</option>
@@ -122,7 +125,7 @@ export default function Sidebar() {
         <select
           value={config.selected_llm_model}
           onChange={(e) => handleModelChange('selected_llm_model', e.target.value)}
-          style={{ width: '100%', marginTop: '5px' }}
+          style={{ width: '100%', marginTop: '5px', padding: '5px', backgroundColor: '#ffffff', color: '#111827', border: '1px solid #ccc' }}
         >
           {currentLLMOptions.map((m) => (
             <option key={m} value={m}>{m}</option>
@@ -130,16 +133,20 @@ export default function Sidebar() {
         </select>
       </div>
 
-      <hr />
+      <hr style={{ margin: '15px 0' }} />
 
       {/* Ingestion Section */}
-      <div style={{ marginTop: '15px' }}>
-        <h4>Document Ingestion</h4>
-        <button onClick={handleIngest} disabled={ingesting} style={{ width: '100%', padding: '8px' }}>
+      <div>
+        <h4 style={{ marginBottom: '10px' }}>Document Ingestion</h4>
+        <button
+          onClick={handleIngest}
+          disabled={ingesting}
+          style={{ width: '100%', padding: '8px', backgroundColor: '#2563eb', color: '#ffffff', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}
+        >
           {ingesting ? 'Ingesting...' : 'Ingest Docs Folder'}
         </button>
         {ingestStatus && (
-          <p style={{ fontSize: '12px', marginTop: '10px', background: '#f0f0f0', padding: '5px' }}>
+          <p style={{ fontSize: '12px', marginTop: '10px', background: '#e5e7eb', color: '#111827', padding: '8px', borderRadius: '4px' }}>
             {ingestStatus}
           </p>
         )}
