@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from sqlmodel import SQLModel, Field
 
@@ -12,7 +12,10 @@ class SystemConfig(SQLModel, table=True):
     selected_llm_model: str = Field(default="qwen2.5:7b", description="Active generator LLM model name or path")
     chunk_size: int = Field(default=300, description="Recursive chunking character size limit")
     chunk_overlap: int = Field(default=40, description="Recursive chunking character overlap")
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        description="Last configuration update timestamp"
+    )
 
 class DocumentIngestionLog(SQLModel, table=True):
     """
@@ -25,4 +28,7 @@ class DocumentIngestionLog(SQLModel, table=True):
     total_chunks: int
     provider_used: str
     embedding_model_used: str
-    ingested_at: datetime = Field(default_factory=datetime.utcnow)
+    ingested_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        description="Ingestion timestamp"
+    )
