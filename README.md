@@ -14,3 +14,6 @@ RAG_PROVIDER=local
 
 To run the code:
 python test_rag.py
+
+To start HTTP Server:
+python -m uvicorn ai.main:app --reload --port 8000
