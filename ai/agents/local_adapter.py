@@ -6,11 +6,16 @@ from ai.agents.base import BaseGenerator
 
 class LocalDeepSeekGenerator(BaseGenerator):
     """
-    Local PyTorch Execution using official Chat Templates.
+    Local PyTorch Execution using official Chat Templates and safe token handling.
     """
     def __init__(self, model_path: str):
         print(f"[Generator] Loading Local LLM from: {model_path}")
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        
+        # Ensure pad_token_id is set on the tokenizer
+        if self.tokenizer.pad_token_id is None:
+            self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+
         self.model = AutoModelForCausalLM.from_pretrained(
             model_path,
             dtype=torch.float32,
@@ -38,7 +43,9 @@ class LocalDeepSeekGenerator(BaseGenerator):
             **inputs,
             max_new_tokens=300,
             temperature=0.6,
-            do_sample=True
+            do_sample=True,
+            pad_token_id=self.tokenizer.pad_token_id,
+            eos_token_id=self.tokenizer.eos_token_id
         )
 
         # Slice generated tokens to exclude the prompt input tokens
