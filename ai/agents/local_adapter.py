@@ -19,7 +19,8 @@ class LocalDeepSeekGenerator(BaseGenerator):
         self.model = AutoModelForCausalLM.from_pretrained(
             model_path,
             dtype=torch.float32,
-            device_map="auto"
+            device_map="auto",
+            low_cpu_mem_usage=True
         )
 
     def generate_answer(self, query: str, context_documents: List[str]) -> Dict[str, Any]:
